@@ -62,6 +62,10 @@ public class MunicipalityPartEntity {
         return municipalityCode;
     }
 
+    public void setMunicipalityCode(int municipalityCode) {
+        this.municipalityCode = municipalityCode;
+    }
+
     public @Nullable Instant getCreatedAt() {
         return createdAt;
     }
