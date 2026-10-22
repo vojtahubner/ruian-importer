@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vf:VymennyFormat xmlns:gml="http://www.opengis.net/gml/3.2"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:ami="urn:cz:isvs:ruian:schemas:AdrMistoIntTypy:v1"
+                  xmlns:base="urn:cz:isvs:ruian:schemas:BaseTypy:v1"
+                  xmlns:coi="urn:cz:isvs:ruian:schemas:CastObceIntTypy:v1"
+                  xmlns:com="urn:cz:isvs:ruian:schemas:CommonTypy:v1"
+                  xmlns:kui="urn:cz:isvs:ruian:schemas:KatUzIntTypy:v1"
+                  xmlns:kri="urn:cz:isvs:ruian:schemas:KrajIntTypy:v1"
+                  xmlns:mci="urn:cz:isvs:ruian:schemas:MomcIntTypy:v1"
+                  xmlns:mpi="urn:cz:isvs:ruian:schemas:MopIntTypy:v1"
+                  xmlns:obi="urn:cz:isvs:ruian:schemas:ObecIntTypy:v1"
+                  xmlns:oki="urn:cz:isvs:ruian:schemas:OkresIntTypy:v1"
+                  xmlns:opi="urn:cz:isvs:ruian:schemas:OrpIntTypy:v1"
+                  xmlns:pai="urn:cz:isvs:ruian:schemas:ParcelaIntTypy:v1"
+                  xmlns:pui="urn:cz:isvs:ruian:schemas:PouIntTypy:v1"
+                  xmlns:rsi="urn:cz:isvs:ruian:schemas:RegSouIntiTypy:v1"
+                  xmlns:spi="urn:cz:isvs:ruian:schemas:SpravObvIntTypy:v1"
+                  xmlns:sti="urn:cz:isvs:ruian:schemas:StatIntTypy:v1"
+                  xmlns:soi="urn:cz:isvs:ruian:schemas:StavObjIntTypy:v1"
+                  xmlns:uli="urn:cz:isvs:ruian:schemas:UliceIntTypy:v1"
+                  xmlns:vci="urn:cz:isvs:ruian:schemas:VuscIntTypy:v1"
+                  xmlns:vf="urn:cz:isvs:ruian:schemas:VymennyFormatTypy:v1"
+                  xmlns:zji="urn:cz:isvs:ruian:schemas:ZsjIntTypy:v1"
+                  xmlns:voi="urn:cz:isvs:ruian:schemas:VOIntTypy:v1"
+                  xsi:schemaLocation="urn:cz:isvs:ruian:schemas:VymennyFormatTypy:v1 ../ruian/xsd/vymenny_format/VymennyFormatTypy.xsd">
+   <vf:Hlavicka>
+      <vf:VerzeVFR>3.1</vf:VerzeVFR>
+      <vf:TypZaznamu>Platne</vf:TypZaznamu>
+      <vf:TypDavky>Plna</vf:TypDavky>
+      <vf:TypSouboru>OB_UZSZ</vf:TypSouboru>
+      <vf:Datum>2021-04-01T00:19:34</vf:Datum>
+      <vf:TransakceOd>
+         <com:Id>0</com:Id>
+         <com:Zapsano>2012-06-29T01:36:44</com:Zapsano>
+      </vf:TransakceOd>
+      <vf:TransakceDo>
+         <com:Id>3764815</com:Id>
+         <com:Zapsano>2021-03-31T23:09:03</com:Zapsano>
+      </vf:TransakceDo>
+      <vf:Metadata xlink:type="simple"
+                   xlink:href="http://cuzk.cz/ruian/metadata/20210331_OB_573060_UZSZ.xml"/>
+      <vf:PlatnostDatK>
+         <com:ISUI>2021-03-31T22:06:06</com:ISUI>
+         <com:ISKN>2021-03-31T23:09:03</com:ISKN>
+      </vf:PlatnostDatK>
+   </vf:Hlavicka>
+   <vf:Data>
+      <vf:Obce>
+         <vf:Obec gml:id="OB.573060">
+            <obi:Kod>573060</obi:Kod>
+            <obi:Nazev>Kopidlno</obi:Nazev>
+            <obi:StatusKod>3</obi:StatusKod>
+            <obi:Okres>
+               <oki:Kod>3604</oki:Kod>
+            </obi:Okres>
+            <obi:Pou>
+               <pui:Kod>2186</pui:Kod>
+            </obi:Pou>
+            <obi:PlatiOd>2019-07-10T00:00:00</obi:PlatiOd>
+            <obi:IdTransakce>2937100</obi:IdTransakce>
+            <obi:GlobalniIdNavrhuZmeny>2042164</obi:GlobalniIdNavrhuZmeny>
+            <obi:MluvnickeCharakteristiky>
+               <com:Pad2>Kopidlna</com:Pad2>
+               <com:Pad3>Kopidlnu</com:Pad3>
+               <com:Pad4>Kopidlno</com:Pad4>
+               <com:Pad6>Kopidlně</com:Pad6>
+               <com:Pad7>Kopidlnem</com:Pad7>
+            </obi:MluvnickeCharakteristiky>
+            <obi:NutsLau>CZ0522573060</obi:NutsLau>
+            <obi:Geometrie>
+               <obi:DefinicniBod>
+                  <gml:MultiPoint gml:id="DOB.573060"
+                                  srsName="urn:ogc:def:crs:EPSG::5514"
+                                  srsDimension="2">
+                     <gml:pointMembers>
+                        <gml:Point gml:id="DOB.573060.1">
+                           <gml:pos>-679188.00 -1024096.00</gml:pos>
+                        </gml:Point>
+                     </gml:pointMembers>
+                  </gml:MultiPoint>
+               </obi:DefinicniBod>
+            </obi:Geometrie>
+         </vf:Obec>
+      </vf:Obce>
+      <vf:SpravniObvody><vf:SpravniObvod gml:id="SO.1"><spi:Kod>1</spi:Kod><spi:Nazev>Test</spi:Nazev></vf:SpravniObvod></vf:SpravniObvody>
+      <vf:CastiObci>
+         <vf:CastObce gml:id="CO.69299">
+            <coi:Kod>69299</coi:Kod>
+            <coi:Nazev>Kopidlno</coi:Nazev>
+            <coi:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </coi:Obec>
+            <coi:PlatiOd>2014-01-03T00:00:00</coi:PlatiOd>
+            <coi:IdTransakce>449645</coi:IdTransakce>
+            <coi:GlobalniIdNavrhuZmeny>473083</coi:GlobalniIdNavrhuZmeny>
+            <coi:MluvnickeCharakteristiky>
+               <com:Pad2>Kopidlna</com:Pad2>
+               <com:Pad3>Kopidlnu</com:Pad3>
+               <com:Pad4>Kopidlno</com:Pad4>
+               <com:Pad6>Kopidlně</com:Pad6>
+               <com:Pad7>Kopidlnem</com:Pad7>
+            </coi:MluvnickeCharakteristiky>
+            <coi:Geometrie>
+               <coi:DefinicniBod>
+                  <gml:Point gml:id="DCO.69299"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-679188.00 -1024096.00</gml:pos>
+                  </gml:Point>
+               </coi:DefinicniBod>
+            </coi:Geometrie>
+         </vf:CastObce>
+         <vf:CastObce gml:id="CO.69302">
+            <coi:Kod>69302</coi:Kod>
+            <coi:Nazev>Ledkov</coi:Nazev>
+            <coi:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </coi:Obec>
+            <coi:PlatiOd>2014-01-03T00:00:00</coi:PlatiOd>
+            <coi:IdTransakce>449647</coi:IdTransakce>
+            <coi:GlobalniIdNavrhuZmeny>473551</coi:GlobalniIdNavrhuZmeny>
+            <coi:MluvnickeCharakteristiky>
+               <com:Pad2>Ledkova</com:Pad2>
+               <com:Pad3>Ledkovu</com:Pad3>
+               <com:Pad4>Ledkov</com:Pad4>
+               <com:Pad6>Ledkově</com:Pad6>
+               <com:Pad7>Ledkovem</com:Pad7>
+            </coi:MluvnickeCharakteristiky>
+            <coi:Geometrie>
+               <coi:DefinicniBod>
+                  <gml:Point gml:id="DCO.69302"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-681339.00 -1022382.00</gml:pos>
+                  </gml:Point>
+               </coi:DefinicniBod>
+            </coi:Geometrie>
+         </vf:CastObce>
+         <vf:CastObce gml:id="CO.97373">
+            <coi:Kod>97373</coi:Kod>
+            <coi:Nazev>Mlýnec</coi:Nazev>
+            <coi:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </coi:Obec>
+            <coi:PlatiOd>2014-01-03T00:00:00</coi:PlatiOd>
+            <coi:IdTransakce>449647</coi:IdTransakce>
+            <coi:GlobalniIdNavrhuZmeny>473551</coi:GlobalniIdNavrhuZmeny>
+            <coi:MluvnickeCharakteristiky>
+               <com:Pad2>Mlýnce</com:Pad2>
+               <com:Pad3>Mlýnci</com:Pad3>
+               <com:Pad4>Mlýnec</com:Pad4>
+               <com:Pad6>Mlýnci</com:Pad6>
+               <com:Pad7>Mlýncem</com:Pad7>
+            </coi:MluvnickeCharakteristiky>
+            <coi:Geometrie>
+               <coi:DefinicniBod>
+                  <gml:Point gml:id="DCO.97373"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-682397.00 -1025474.00</gml:pos>
+                  </gml:Point>
+               </coi:DefinicniBod>
+            </coi:Geometrie>
+         </vf:CastObce>
+         <vf:CastObce gml:id="CO.31801">
+            <coi:Kod>31801</coi:Kod>
+            <coi:Nazev>Drahoraz</coi:Nazev>
+            <coi:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </coi:Obec>
+            <coi:PlatiOd>2015-06-05T00:00:00</coi:PlatiOd>
+            <coi:IdTransakce>895705</coi:IdTransakce>
+            <coi:GlobalniIdNavrhuZmeny>731632</coi:GlobalniIdNavrhuZmeny>
+            <coi:MluvnickeCharakteristiky>
+               <com:Pad2>Drahoraze</com:Pad2>
+               <com:Pad3>Drahorazi</com:Pad3>
+               <com:Pad4>Drahoraz</com:Pad4>
+               <com:Pad6>Drahorazi</com:Pad6>
+               <com:Pad7>Drahorazí</com:Pad7>
+            </coi:MluvnickeCharakteristiky>
+            <coi:Geometrie>
+               <coi:DefinicniBod>
+                  <gml:Point gml:id="DCO.31801"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-677733.00 -1021211.00</gml:pos>
+                  </gml:Point>
+               </coi:DefinicniBod>
+            </coi:Geometrie>
+            <coi:DatumVzniku>1986-01-01T00:00:00</coi:DatumVzniku>
+         </vf:CastObce>
+         <vf:CastObce gml:id="CO.31828">
+            <coi:Kod>31828</coi:Kod>
+            <coi:Nazev>Pševes</coi:Nazev>
+            <coi:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </coi:Obec>
+            <coi:PlatiOd>2014-01-03T00:00:00</coi:PlatiOd>
+            <coi:IdTransakce>449647</coi:IdTransakce>
+            <coi:GlobalniIdNavrhuZmeny>473551</coi:GlobalniIdNavrhuZmeny>
+            <coi:MluvnickeCharakteristiky>
+               <com:Pad2>Pševsi</com:Pad2>
+               <com:Pad3>Pševsi</com:Pad3>
+               <com:Pad4>Pševes</com:Pad4>
+               <com:Pad6>Pševsi</com:Pad6>
+               <com:Pad7>Pševsí</com:Pad7>
+            </coi:MluvnickeCharakteristiky>
+            <coi:Geometrie>
+               <coi:DefinicniBod>
+                  <gml:Point gml:id="DCO.31828"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-677322.00 -1022271.00</gml:pos>
+                  </gml:Point>
+               </coi:DefinicniBod>
+            </coi:Geometrie>
+         </vf:CastObce>
+      </vf:CastiObci>
+      <vf:KatastralniUzemi>
+         <vf:KatastralniUzemi gml:id="KU.631825">
+            <kui:Kod>631825</kui:Kod>
+            <kui:Nazev>Pševes</kui:Nazev>
+            <kui:ExistujeDigitalniMapa>true</kui:ExistujeDigitalniMapa>
+            <kui:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </kui:Obec>
+            <kui:PlatiOd>2018-06-22T00:00:00</kui:PlatiOd>
+            <kui:IdTransakce>2461357</kui:IdTransakce>
+            <kui:GlobalniIdNavrhuZmeny>0</kui:GlobalniIdNavrhuZmeny>
+            <kui:RizeniId>54983878010</kui:RizeniId>
+            <kui:MluvnickeCharakteristiky>
+               <com:Pad2>Pševsi</com:Pad2>
+               <com:Pad3>Pševsi</com:Pad3>
+               <com:Pad4>Pševes</com:Pad4>
+               <com:Pad6>Pševsi</com:Pad6>
+               <com:Pad7>Pševsí</com:Pad7>
+            </kui:MluvnickeCharakteristiky>
+            <kui:Geometrie>
+               <kui:DefinicniBod>
+                  <gml:MultiPoint gml:id="DKU.631825"
+                                  srsName="urn:ogc:def:crs:EPSG::5514"
+                                  srsDimension="2">
+                     <gml:pointMembers>
+                        <gml:Point gml:id="DKU.631825.1">
+                           <gml:pos>-677299.68 -1022432.06</gml:pos>
+                        </gml:Point>
+                     </gml:pointMembers>
+                  </gml:MultiPoint>
+               </kui:DefinicniBod>
+            </kui:Geometrie>
+            <kui:DatumVzniku>1842-01-01T00:00:00</kui:DatumVzniku>
+         </vf:KatastralniUzemi>
+      </vf:KatastralniUzemi>
+      <vf:Ulice>
+         <vf:Ulice gml:id="UL.165310">
+            <uli:Kod>165310</uli:Kod>
+            <uli:Nazev>Bezručova</uli:Nazev>
+            <uli:Obec>
+               <obi:Kod>573060</obi:Kod>
+            </uli:Obec>
+            <uli:PlatiOd>2011-07-01T00:00:00</uli:PlatiOd>
+            <uli:IdTransakce>0</uli:IdTransakce>
+            <uli:GlobalniIdNavrhuZmeny>0</uli:GlobalniIdNavrhuZmeny>
+         </vf:Ulice>
+      </vf:Ulice>
+      <vf:Parcely>
+         <vf:Parcela gml:id="PA.2555764604">
+            <pai:Id>2555764604</pai:Id>
+            <pai:KmenoveCislo>555</pai:KmenoveCislo>
+            <pai:VymeraParcely>14586</pai:VymeraParcely>
+            <pai:DruhCislovaniKod>2</pai:DruhCislovaniKod>
+            <pai:DruhPozemkuKod>6</pai:DruhPozemkuKod>
+            <pai:KatastralniUzemi>
+               <kui:Kod>631809</kui:Kod>
+            </pai:KatastralniUzemi>
+            <pai:PlatiOd>2008-03-06T00:00:00</pai:PlatiOd>
+            <pai:IdTransakce>0</pai:IdTransakce>
+            <pai:RizeniId>3206262604</pai:RizeniId>
+            <pai:BonitovaneDily>
+               <com:BonitovanyDil>
+                  <com:Vymera>912</com:Vymera>
+                  <com:BonitovanaJednotkaKod>30810</com:BonitovanaJednotkaKod>
+                  <com:IdTranskace>0</com:IdTranskace>
+                  <com:RizeniId>3234868604</com:RizeniId>
+               </com:BonitovanyDil>
+               <com:BonitovanyDil>
+                  <com:Vymera>10735</com:Vymera>
+                  <com:BonitovanaJednotkaKod>30840</com:BonitovanaJednotkaKod>
+                  <com:IdTranskace>0</com:IdTranskace>
+                  <com:RizeniId>3234868604</com:RizeniId>
+               </com:BonitovanyDil>
+               <com:BonitovanyDil>
+                  <com:Vymera>2923</com:Vymera>
+                  <com:BonitovanaJednotkaKod>32041</com:BonitovanaJednotkaKod>
+                  <com:IdTranskace>0</com:IdTranskace>
+                  <com:RizeniId>3234868604</com:RizeniId>
+               </com:BonitovanyDil>
+               <com:BonitovanyDil>
+                  <com:Vymera>16</com:Vymera>
+                  <com:BonitovanaJednotkaKod>31010</com:BonitovanaJednotkaKod>
+                  <com:IdTranskace>0</com:IdTranskace>
+                  <com:RizeniId>3234868604</com:RizeniId>
+               </com:BonitovanyDil>
+            </pai:BonitovaneDily>
+            <pai:ZpusobyOchranyPozemku>
+               <com:ZpusobOchrany>
+                  <com:Kod>27</com:Kod>
+                  <com:TypOchranyKod>6</com:TypOchranyKod>
+                  <com:IdTransakce>0</com:IdTransakce>
+                  <com:RizeniId>3176845604</com:RizeniId>
+               </com:ZpusobOchrany>
+            </pai:ZpusobyOchranyPozemku>
+            <pai:Geometrie>
+               <pai:DefinicniBod>
+                  <gml:Point gml:id="DPA.2555764604"
+                             srsName="urn:ogc:def:crs:EPSG::5514"
+                             srsDimension="2">
+                     <gml:pos>-676564.49 -1021025.67</gml:pos>
+                  </gml:Point>
+               </pai:DefinicniBod>
+            </pai:Geometrie>
+         </vf:Parcela>
+      </vf:Parcely>
+      <vf:AdresniMista>
+         <vf:AdresniMisto gml:id="AD.1769707">
+            <ami:Kod>1769707</ami:Kod>
+            <ami:CisloDomovni>1</ami:CisloDomovni>
+            <ami:Psc>50732</ami:Psc>
+            <ami:StavebniObjekt>
+               <soi:Kod>1753380</soi:Kod>
+            </ami:StavebniObjekt>
+            <ami:VOKod>2947</ami:VOKod>
+            <ami:PlatiOd>2013-12-01T00:00:00</ami:PlatiOd>
+            <ami:IdTransakce>413556</ami:IdTransakce>
+            <ami:GlobalniIdNavrhuZmeny>462813</ami:GlobalniIdNavrhuZmeny>
+            <ami:Geometrie>
+               <ami:DefinicniBod>
+                  <ami:AdresniBod>
+                     <gml:Point gml:id="DAM.1769707.1"
+                                srsName="urn:ogc:def:crs:EPSG::5514"
+                                srsDimension="2">
+                        <gml:pos>-677899.19 -1021133.83</gml:pos>
+                     </gml:Point>
+                  </ami:AdresniBod>
+               </ami:DefinicniBod>
+            </ami:Geometrie>
+         </vf:AdresniMisto>
+      </vf:AdresniMista>
+   </vf:Data>
+</vf:VymennyFormat>
