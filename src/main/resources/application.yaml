@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: ruian-importer
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ruian
+    username: ruian
+    password: ruian
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  http:
+    clients:
+      connect-timeout: 5s
+      read-timeout: 60s
+      # Redirects are never followed: the host allowlist is checked on the requested URL only.
+      redirects: dont-follow
+
+ruian:
+  import:
+    default-source-url: https://www.smartform.cz/download/kopidlno.xml.zip
+    allowed-hosts:
+      - smartform.cz
+      - vdp.cuzk.gov.cz
+    on-startup: true
+    max-uncompressed-bytes: 64MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      # Showcase setting; a production deployment would use "when-authorized" behind authentication.
+      show-details: always

@@ -1,0 +1,19 @@
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+
+# Local tooling and private files
+.claude/
+CLAUDE.md
+*.log
+Zrucny_Java_ucen_Trixi.pdf

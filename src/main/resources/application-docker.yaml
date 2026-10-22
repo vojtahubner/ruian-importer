@@ -1,0 +1,10 @@
+# Active inside the container image. Datasource settings arrive as SPRING_DATASOURCE_* environment variables.
+spring:
+  docker:
+    compose:
+      enabled: false
+
+logging:
+  structured:
+    format:
+      console: ecs

@@ -1,0 +1,9 @@
+# Tests never touch the internet and never start Docker Compose; they get PostgreSQL from Testcontainers.
+spring:
+  docker:
+    compose:
+      enabled: false
+
+ruian:
+  import:
+    on-startup: false

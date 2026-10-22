@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.zip binary
+mvnw text eol=lf
+mvnw.cmd text eol=crlf
