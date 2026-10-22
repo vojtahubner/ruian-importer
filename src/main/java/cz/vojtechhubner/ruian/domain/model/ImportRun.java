@@ -2,6 +2,7 @@ package cz.vojtechhubner.ruian.domain.model;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -22,6 +23,10 @@ public record ImportRun(
     public static final int MAX_ERROR_MESSAGE_LENGTH = 1000;
 
     public ImportRun {
+        Objects.requireNonNull(sourceUrl, "sourceUrl must not be null");
+        Objects.requireNonNull(startedAt, "startedAt must not be null");
+        Objects.requireNonNull(finishedAt, "finishedAt must not be null");
+        Objects.requireNonNull(status, "status must not be null");
         if (errorMessage != null && errorMessage.length() > MAX_ERROR_MESSAGE_LENGTH) {
             errorMessage = errorMessage.substring(0, MAX_ERROR_MESSAGE_LENGTH);
         }
