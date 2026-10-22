@@ -2,6 +2,7 @@ package cz.vojtechhubner.ruian.domain.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import java.net.URI;
 import java.time.Instant;
@@ -82,6 +83,34 @@ class ImportRunTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ImportRun.succeeded(SOURCE, STARTED_AT, FINISHED_AT, 573060, -1))
                 .withMessageContaining("partCount");
+    }
+
+    @Test
+    void rejectsNullSourceUrl() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> ImportRun.succeeded(null, STARTED_AT, FINISHED_AT, 573060, 5))
+                .withMessage("sourceUrl must not be null");
+    }
+
+    @Test
+    void rejectsNullStartedAt() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> ImportRun.succeeded(SOURCE, null, FINISHED_AT, 573060, 5))
+                .withMessage("startedAt must not be null");
+    }
+
+    @Test
+    void rejectsNullFinishedAt() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> ImportRun.succeeded(SOURCE, STARTED_AT, null, 573060, 5))
+                .withMessage("finishedAt must not be null");
+    }
+
+    @Test
+    void rejectsNullStatus() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> new ImportRun(null, SOURCE, STARTED_AT, FINISHED_AT, null, null, 0, null))
+                .withMessage("status must not be null");
     }
 
     @Test
