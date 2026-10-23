@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "ruian-importer",
+    "description": "REST API of the RÚIAN importer: run imports of a municipality from a VFR file, list the recorded import runs and read the imported municipalities and their parts. Set baseUrl to where the application runs (default http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Run import (default source)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/imports",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "imports"]
+        },
+        "description": "Imports the configured default source (ruian.import.default-source-url, the Kopidlno archive). No body is needed. Responds 201 with the recorded run and a Location header pointing at it; 502 if the source is unavailable, 422 if the VFR data is invalid."
+      },
+      "response": []
+    },
+    {
+      "name": "Run import (custom source URL)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceUrl\": \"https://vdp.cuzk.gov.cz/vymenny_format/soucasna/20260930_OB_573060_UZSZ.xml.zip\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/imports",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "imports"]
+        },
+        "description": "Imports a municipality from a VFR archive on an allowed host (smartform.cz, vdp.cuzk.gov.cz; https only). VDP keeps only a few monthly snapshots: YYYYMMDD in the file name is the last day of the previous month. A source outside the allowlist is rejected with 422 urn:problem-type:source-not-allowed without recording a run."
+      },
+      "response": []
+    },
+    {
+      "name": "List imports",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/imports?limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "imports"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "20",
+              "description": "1 to 100, default 20"
+            }
+          ]
+        },
+        "description": "Lists the most recent import runs, newest first, SUCCEEDED and FAILED alike."
+      },
+      "response": []
+    },
+    {
+      "name": "Get import by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/imports/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "imports", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "id of a recorded run, see the Location header of a run or List imports"
+            }
+          ]
+        },
+        "description": "Returns one recorded import run; 404 urn:problem-type:not-found for an unknown id."
+      },
+      "response": []
+    },
+    {
+      "name": "List municipalities",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/municipalities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "municipalities"]
+        },
+        "description": "Lists the imported municipalities ordered by code. After the startup import this is Kopidlno (573060)."
+      },
+      "response": []
+    },
+    {
+      "name": "Get municipality 573060",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/municipalities/573060",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "municipalities", "573060"]
+        },
+        "description": "Returns the municipality Kopidlno by its RÚIAN code; 404 for an unknown code."
+      },
+      "response": []
+    },
+    {
+      "name": "Get parts of 573060",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/municipalities/573060/parts",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "municipalities", "573060", "parts"]
+        },
+        "description": "Returns the parts of Kopidlno ordered by code: Drahoraz, Pševes, Kopidlno, Ledkov and Mlýnec. 404 for an unknown municipality."
+      },
+      "response": []
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        },
+        "description": "Spring Boot Actuator health including the database component."
+      },
+      "response": []
+    },
+    {
+      "name": "OpenAPI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v3/api-docs",
+          "host": ["{{baseUrl}}"],
+          "path": ["v3", "api-docs"]
+        },
+        "description": "OpenAPI 3 document generated by springdoc; Swagger UI is at {{baseUrl}}/swagger-ui.html."
+      },
+      "response": []
+    }
+  ]
+}
