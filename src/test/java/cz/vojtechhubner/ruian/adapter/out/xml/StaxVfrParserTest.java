@@ -151,7 +151,20 @@ class StaxVfrParserTest {
 
         assertThatExceptionOfType(VfrParseException.class)
                 .isThrownBy(() -> parser.parse(stream(xml)))
-                .withMessage("Part 69299 belongs to municipality 999999, expected 573060");
+                .withMessageContaining("69299")
+                .withMessageContaining("999999");
+    }
+
+    @Test
+    void rejectsDuplicatePart() {
+        var sample = sampleXml();
+        var end = "</vf:CastObce>";
+        var part = sample.substring(sample.indexOf("<vf:CastObce "), sample.indexOf(end) + end.length());
+        var xml = sample.replace(part, part + part);
+
+        assertThatExceptionOfType(VfrParseException.class)
+                .isThrownBy(() -> parser.parse(stream(xml)))
+                .withMessageContaining("69299");
     }
 
     @Test

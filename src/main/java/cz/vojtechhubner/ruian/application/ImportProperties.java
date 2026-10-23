@@ -13,7 +13,8 @@ import org.springframework.validation.annotation.Validated;
  *
  * @param defaultSourceUrl     the VFR file downloaded when a request names no source
  * @param allowedHosts         hosts a source URL may point to
- * @param onStartup            whether the default source is imported when the application starts
+ * @param onStartup            whether the default source is imported when the application starts; consumed by
+ *                             {@code StartupImportRunner} through {@code @ConditionalOnProperty}
  * @param maxUncompressedBytes the most XML the parser reads from one source, after decompression
  */
 @ConfigurationProperties("ruian.import")

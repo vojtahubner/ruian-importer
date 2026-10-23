@@ -23,12 +23,17 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.FilteredHostException;
+import org.springframework.boot.http.client.HttpClientSettings;
+import org.springframework.boot.http.client.InetAddressFilter;
 import org.springframework.boot.restclient.test.autoconfigure.RestClientTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClient;
 
 @RestClientTest(HttpVfrSource.class)
 @Import(HttpClientConfig.class)
@@ -85,6 +90,17 @@ class HttpVfrSourceTest {
     }
 
     @Test
+    void reportsRedirectToRelativeLocationNamingTheRawLocation() {
+        server.expect(requestTo(SOURCE))
+                .andRespond(withStatus(HttpStatus.FOUND).location(URI.create("/elsewhere.zip")));
+
+        assertThatExceptionOfType(SourceUnavailableException.class)
+                .isThrownBy(() -> source.read(SOURCE, in -> fail("reader must not be called")))
+                .withMessageContaining("HTTP 302")
+                .withMessageContaining("/elsewhere.zip");
+    }
+
+    @Test
     void propagatesParseFailureUnchanged() {
         server.expect(requestTo(SOURCE)).andRespond(withSuccess("<xml/>", MediaType.APPLICATION_XML));
         var failure = new VfrParseException("bad");
@@ -113,5 +129,19 @@ class HttpVfrSourceTest {
                 .isThrownBy(() -> source.read(SOURCE, InputStream::readAllBytes))
                 .withMessageContaining("connection failed")
                 .withCauseInstanceOf(ResourceAccessException.class);
+    }
+
+    @Test
+    void reportsHostResolvingToBlockedAddressAsUnavailableSource() {
+        // the production filter on a Boot-built JDK client rejects the loopback literal before any connection is made
+        var factory = ClientHttpRequestFactoryBuilder.jdk()
+                .build(HttpClientSettings.defaults().withInetAddressFilter(InetAddressFilter.externalAddresses()));
+        var filteringSource = new HttpVfrSource(RestClient.builder().requestFactory(factory));
+        var loopback = URI.create("http://127.0.0.1/kopidlno.xml.zip");
+
+        assertThatExceptionOfType(SourceUnavailableException.class)
+                .isThrownBy(() -> filteringSource.read(loopback, in -> fail("reader must not be called")))
+                .withMessageContaining("blocked")
+                .withCauseInstanceOf(FilteredHostException.class);
     }
 }

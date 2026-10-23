@@ -22,9 +22,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * Runs an import end to end: checks the source against the policy, streams it through the parser into the store
- * and records the outcome as an {@link ImportRun}; also answers the import run queries. Whatever fails after the
- * policy check is recorded as a FAILED run and rethrown as an {@link ImportFailedException}; the stores own the
- * transactions, so a failed import leaves the previously stored municipality untouched.
+ * and records the outcome as an {@link ImportRun}; also answers the import run queries. Whatever fails while
+ * downloading, parsing or storing the data is recorded as a FAILED run and rethrown as an
+ * {@link ImportFailedException}; the stores own the transactions, so a failed import leaves the previously stored
+ * municipality untouched. The SUCCEEDED run is recorded only after the data transaction has committed, so a failure
+ * to write that history row propagates as it is rather than as a FAILED run.
  */
 @Service
 public class ImportService implements ImportMunicipalityUseCase, ImportRunQuery {
@@ -58,28 +60,35 @@ public class ImportService implements ImportMunicipalityUseCase, ImportRunQuery 
 
     @Override
     public ImportRun importFrom(@Nullable URI requestedSource) {
-        URI source = requestedSource != null ? requestedSource : properties.defaultSourceUrl();
-        policy.ensureAllowed(source);
+        URI sourceUrl = requestedSource != null ? requestedSource : properties.defaultSourceUrl();
+        policy.ensureAllowed(sourceUrl);
         Instant started = clock.instant();
-        log.info("Import started from {}", source);
+        log.info("Import started from {}", sourceUrl);
+        MunicipalityDataset dataset;
+        int partCount;
         try {
-            MunicipalityDataset dataset = this.source.read(source, parser::parse);
-            int partCount = municipalities.replace(dataset);
-            ImportRun run = runs.save(
-                    ImportRun.succeeded(source, started, clock.instant(), dataset.municipality().code(), partCount));
-            log.info("Import {} succeeded: municipality {} ({}) with {} parts",
-                    run.id(), dataset.municipality().name(), dataset.municipality().code(), partCount);
-            return run;
+            dataset = source.read(sourceUrl, parser::parse);
+            partCount = municipalities.replace(dataset);
         } catch (RuntimeException e) {
-            ImportRun failed = runs.save(
-                    ImportRun.failed(source, started, clock.instant(), ErrorMessages.sanitize(e)));
             if (e instanceof ImportException) {
-                log.warn("Import {} failed: {}", failed.id(), e.getMessage());
+                log.warn("Import from {} failed: {}", sourceUrl, e.getMessage());
             } else {
-                log.error("Import {} failed unexpectedly", failed.id(), e);
+                log.error("Import from {} failed unexpectedly", sourceUrl, e);
+            }
+            ImportRun failed;
+            try {
+                failed = runs.save(ImportRun.failed(sourceUrl, started, clock.instant(), ErrorMessages.sanitize(e)));
+            } catch (RuntimeException saveFailure) {
+                saveFailure.addSuppressed(e);
+                throw saveFailure;
             }
             throw new ImportFailedException(failed, e);
         }
+        ImportRun run = runs.save(
+                ImportRun.succeeded(sourceUrl, started, clock.instant(), dataset.municipality().code(), partCount));
+        log.info("Import {} succeeded: municipality {} ({}) with {} parts",
+                run.id(), dataset.municipality().name(), dataset.municipality().code(), partCount);
+        return run;
     }
 
     @Override

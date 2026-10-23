@@ -15,6 +15,28 @@
     <version>0.1.0-SNAPSHOT</version>
     <name>ruian-importer</name>
     <description>Imports RÚIAN municipality data (obec, části obce) from VFR XML into PostgreSQL</description>
+    <url>https://github.com/vojtahubner/ruian-importer</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>vojtahubner</id>
+            <name>Vojtěch Hübner</name>
+            <url>https://github.com/vojtahubner</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/vojtahubner/ruian-importer.git</connection>
+        <developerConnection>scm:git:git@github.com:vojtahubner/ruian-importer.git</developerConnection>
+        <url>https://github.com/vojtahubner/ruian-importer</url>
+    </scm>
 
     <properties>
         <java.version>25</java.version>
@@ -165,6 +187,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/config/**</exclude>
+                        <exclude>**/dto/**</exclude>
+                        <exclude>**/RuianImporterApplication.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -178,13 +207,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/config/**</exclude>
-                                <exclude>**/dto/**</exclude>
-                                <exclude>**/RuianImporterApplication.class</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>check</id>
@@ -193,11 +215,6 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <excludes>
-                                <exclude>**/config/**</exclude>
-                                <exclude>**/dto/**</exclude>
-                                <exclude>**/RuianImporterApplication.class</exclude>
-                            </excludes>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>

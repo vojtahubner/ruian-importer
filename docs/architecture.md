@@ -129,7 +129,8 @@ null)` kopíruje invariant recordu `ImportRun`.
   upsert částí a smazání chybějících částí buď projdou celé, nebo se nic nezmění.
 - `ImportRunPersistenceAdapter.save()` zapisuje běh jednou, v samostatné transakci, až když je výsledek známý. Když
   `replace()` selže a odrolluje, `FAILED` běh se přesto uloží; API tak nikdy neukáže napůl zapsanou obec a přitom o
-  selhání ví.
+  selhání ví. Záznam `SUCCEEDED` se zapisuje až po datové transakci a mimo ošetření selhání: když se řádek historie
+  nepodaří zapsat, skončí požadavek obyčejnou 500 bez `FAILED` záznamu.
 - Stahování a parsování probíhá mimo transakci: spojení do databáze se drží jen po dobu zápisu, ne po dobu downloadu.
 
 ## Chybové stavy
@@ -137,7 +138,7 @@ null)` kopíruje invariant recordu `ImportRun`.
 | Výjimka | Kde vzniká | HTTP | `type` |
 | --- | --- | --- | --- |
 | `SourceNotAllowedException` | `SourceUrlPolicy`, před stažením; žádný běh se nezakládá | 422 | `urn:problem-type:source-not-allowed` |
-| `ImportFailedException` s příčinou `SourceUnavailableException` | `HttpVfrSource`: HTTP jiné než 2xx včetně 3xx, timeout, DNS, přerušený stream | 502 | `urn:problem-type:source-unavailable` |
+| `ImportFailedException` s příčinou `SourceUnavailableException` | `HttpVfrSource`: HTTP jiné než 2xx včetně 3xx, timeout, DNS, adresa hosta blokovaná `InetAddressFilter`, přerušený stream | 502 | `urn:problem-type:source-unavailable` |
 | `ImportFailedException` s příčinou `VfrParseException` | `StaxVfrParser`, `BoundedInputStream`: poškozený ZIP nebo XML, žádná nebo více obcí, část cizí obce, překročený limit | 422 | `urn:problem-type:invalid-vfr` |
 | `ImportFailedException` s jinou příčinou | cokoli dalšího po kontrole zdroje, typicky databáze | 500 | `urn:problem-type:import-failed` |
 | `NotFoundException` | `MunicipalityQueryService`, `ImportService.byId` | 404 | `urn:problem-type:not-found` |

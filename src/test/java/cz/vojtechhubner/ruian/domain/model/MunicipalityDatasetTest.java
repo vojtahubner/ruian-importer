@@ -2,6 +2,7 @@ package cz.vojtechhubner.ruian.domain.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,28 @@ class MunicipalityDatasetTest {
     }
 
     @Test
+    void rejectsNullMunicipality() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> new MunicipalityDataset(null, List.of(KOPIDLNO_PART)))
+                .withMessage("municipality must not be null");
+    }
+
+    @Test
     void rejectsPartOfAnotherMunicipalityNamingItsCode() {
         var foreignPart = new MunicipalityPart(400050, "Jičín", 572659);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new MunicipalityDataset(KOPIDLNO, List.of(KOPIDLNO_PART, foreignPart)))
-                .withMessageContaining("400050");
+                .withMessage("Part 400050 belongs to municipality 572659, expected 573060");
+    }
+
+    @Test
+    void rejectsDuplicatePartCodeNamingIt() {
+        var duplicate = new MunicipalityPart(KOPIDLNO_PART.code(), "Kopidlno again", 573060);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new MunicipalityDataset(KOPIDLNO, List.of(KOPIDLNO_PART, PSEVES, duplicate)))
+                .withMessage("Duplicate part code 69205");
     }
 
     @Test

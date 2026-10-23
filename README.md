@@ -29,6 +29,11 @@ První build trvá 3–5 minut (stahuje se image s JDK a závislosti Mavenu; dal
 nezměnilo). Po startu aplikace proběhne import automaticky (`ruian.import.on-startup=true`): stáhne se
 `kopidlno.xml.zip`, zparsuje a obec s jejími částmi se uloží.
 
+Import při startu stahuje soubor z `www.smartform.cz` přes HTTPS. Bez připojení k internetu aplikace přesto nastartuje:
+běh je v `GET /api/imports` zaznamenaný jako `FAILED` a API zůstane prázdné; `curl -X POST localhost:8080/api/imports`
+import zopakuje. Obě služby poslouchají jen na `localhost`; když na portu 5432 už běží jiný PostgreSQL,
+`DB_PORT=55432 docker compose --profile app up --build` se mu vyhne.
+
 Ověření z druhého terminálu:
 
 ```bash
@@ -168,6 +173,7 @@ flowchart LR
     end
     subgraph application["application"]
         services["ImportService"]
+        queries["MunicipalityQueryService"]
         policy["SourceUrlPolicy"]
     end
     subgraph domain["domain"]
@@ -185,9 +191,11 @@ flowchart LR
     web --> portsIn
     startup --> portsIn
     portsIn -.->|implementace| services
+    portsIn -.->|implementace| queries
     services --> policy
     services --> model
     services --> portsOut
+    queries --> portsOut
     portsOut -.->|implementace| httpSource
     portsOut -.->|implementace| staxParser
     portsOut -.->|implementace| persistence
@@ -229,30 +237,30 @@ fail-fast validace v kompaktních konstruktorech.
 ## Testování
 
 Unit testy (`*Test`, Maven Surefire, bez Dockeru) běží v `./mvnw test`; integrační testy (`*IT`, Maven Failsafe)
-potřebují Docker kvůli Testcontainers a běží v `./mvnw verify`. V CI na commitu `52bb32b` proběhlo 142 unit a 22
-integračních testů (`ImportFlowIT` 7, `PersistenceAdaptersIT` 11, `JpaMappingIT` 4).
+potřebují Docker kvůli Testcontainers a běží v `./mvnw verify`. Sada má 148 unit a 22 integračních testů
+(`ImportFlowIT` 7, `PersistenceAdaptersIT` 11, `JpaMappingIT` 4).
 
 | Test | Co pokrývá |
 | --- | --- |
 | `MunicipalityTest` | record obce: kladný kód, neprázdný název, 48 znaků projde a delší ne |
 | `MunicipalityPartTest` | record části obce: kladný kód části i kód obce, neprázdný název, 48 znaků projde a delší ne |
-| `MunicipalityDatasetTest` | dataset obce: defenzivní kopie seznamu částí, část cizí obce odmítne s jejím kódem ve zprávě, počet částí |
+| `MunicipalityDatasetTest` | dataset obce: defenzivní kopie seznamu částí, `null` obec odmítne, část cizí obce i duplicitní kód části odmítne s kódem ve zprávě, počet částí |
 | `ImportRunTest` | record běhu: factory `succeeded` a `failed`, `withId`, konzistence `SUCCEEDED`/`FAILED` s kódem obce, počtem částí a chybovou zprávou, konec ne před začátkem, `null` v povinných polích, zkrácení chybové zprávy |
 | `SourceNotAllowedExceptionTest` | zpráva výjimky pojmenuje zdroj a důvod odmítnutí |
 | `SourceUnavailableExceptionTest` | zpráva pojmenuje zdroj a důvod, původní výjimka zůstává jako příčina |
 | `ImportFailedExceptionTest` | zpráva pojmenuje id běhu a příčinu, `SUCCEEDED` běh odmítne |
 | `NotFoundExceptionTest` | zpráva pojmenuje hledaný zdroj a jeho id |
-| `ImportServiceTest` | use case importu s Mockito: výchozí vs. zadaný zdroj, policy před vším ostatním, záznam `FAILED` běhu při selhání, skrytí detailů neočekávané chyby |
+| `ImportServiceTest` | use case importu s Mockito: výchozí vs. zadaný zdroj, policy před vším ostatním, záznam `FAILED` běhu při selhání, skrytí detailů neočekávané chyby, selhání zápisu historie (u `FAILED` běhu se vyhodí s původní chybou jako suppressed, u `SUCCEEDED` běhu beze změny a bez druhého zápisu) |
 | `MunicipalityQueryServiceTest` | seznam obcí, obec a její části přicházejí z `MunicipalityStore`, neznámá obec je `NotFoundException` |
 | `SourceUrlPolicyTest` | pravidla allowlistu parametrizovaně: `https` na povoleném hostu nebo jeho subdoméně (i s portem 443 a velkými písmeny) projde; relativní URL, `http`, user info, jiný port, IP adresa a cizí host se odmítnou s důvodem ve zprávě |
-| `ImportPropertiesTest` | binding `ruian.import.*` přes `ApplicationContextRunner`, `64MB` jako `DataSize`, prázdný `allowed-hosts` zastaví start |
+| `ImportPropertiesTest` | binding všech hodnot `ruian.import.*` přes `ApplicationContextRunner` (včetně `64MB` jako `DataSize`), prázdný `allowed-hosts` zastaví start |
 | `ErrorMessagesTest` | sanitizace chybových zpráv: zpráva `ImportException` projde (bez zprávy její typ), ostatní výjimky se nahradí názvem typu |
 | `ImportControllerTest` (`@WebMvcTest`) | `POST /api/imports` bez těla, s prázdným i zadaným `sourceUrl`, 201 s `Location`, 400 pro neplatnou nebo dlouhou URI, 422 pro zdroj mimo allowlist bez běhu, 422/502/500 pro selhaný běh jako ProblemDetail s `instance` a `importRunId`, 500 bez textu příčiny; `GET` seznam s `limit` (výchozí 20, 400 mimo rozsah) a detail běhu včetně 404 |
 | `MunicipalityControllerTest` (`@WebMvcTest`) | seznam obcí, obec a její části podle kódu, 404 pro neznámou obec, 500 bez textu výjimky |
 | `ImportRunResponseTest` | mapování běhu na DTO, odmítnutí běhu bez id |
 | `StartupImportRunnerTest` | import při startu proběhne jednou a žádné selhání nepoloží aplikaci |
-| `HttpVfrSourceTest` (`@RestClientTest` + `MockRestServiceServer`) | streamování těla do readeru, 404/500/3xx jako nedostupný zdroj, propagace parsovací chyby, přerušený stream, timeout |
-| `StaxVfrParserTest` | plain i zazipované XML, přeskočení cizích položek archivu, archiv bez XML, žádná nebo více obcí, část cizí obce, XXE se nerozvine, zastavení po částech obce, limit velikosti, poškozené XML, výpadky přenosu |
+| `HttpVfrSourceTest` (`@RestClientTest` + `MockRestServiceServer`) | streamování těla do readeru, 404/500/3xx jako nedostupný zdroj (u relativního `Location` celá adresa), host s adresou blokovanou `InetAddressFilter`, propagace parsovací chyby, přerušený stream, timeout |
+| `StaxVfrParserTest` | plain i zazipované XML, přeskočení cizích položek archivu, archiv bez XML, žádná nebo více obcí, část cizí obce, dvakrát táž část, XXE se nerozvine, zastavení po částech obce, limit velikosti, poškozené XML, výpadky přenosu |
 | `StaxVfrParserRealFileTest` | skutečný `kopidlno.xml.zip`: obec 573060 s pěti částmi a méně než 200 kB přečtených z archivu |
 | `BoundedInputStreamTest` | limit rozbalených bajtů: přesně limit projde, bajt navíc i čtení pole přes limit selže, přeskočené bajty (`skip`) se počítají |
 | `PersistenceMapperTest` | převod entit obce a části na recordy a běhu `SUCCEEDED`/`FAILED` mezi recordem a entitou oběma směry |
@@ -270,8 +278,8 @@ Pravidla v `ArchitectureTest`: `domain` závisí jen na `java.*` a JSpecify; `ap
 `@Transactional`; mezi balíčky nejsou cykly; `@RestController` jen v `adapter.in.web`.
 
 Pokrytí měří JaCoCo nad oběma fázemi dohromady (`config`, `dto` a hlavní třída jsou z měření vyloučené) a
-`./mvnw verify` selže pod 70 % řádků. Na commitu `52bb32b` naměřilo CI 97,9 % řádků a 92,2 % větví; report je v CI
-artefaktu `reports` a lokálně po `./mvnw verify` v `target/site/jacoco/index.html`.
+`./mvnw verify` selže pod 70 % řádků. Poslední běh CI naměřil zhruba 98 % řádků a 92 % větví (artefakt `reports`);
+lokálně je report po `./mvnw verify` v `target/site/jacoco/index.html`.
 
 Parser čte jen začátek souboru: rozbalené XML Kopidlna má 13 411 844 bajtů, sekce `vf:CastiObci` končí na bajtu
 10 440 a tam `StaxVfrParser` skončí. Z 526 kB archivu tak přečte zhruba 2 kB komprimovaných dat;
@@ -319,7 +327,7 @@ strukturované logování ECS; `test` (integrační testy) vypíná Docker Compo
 - Chybí test nad statutárním městem (Brno): jeho VFR obsahuje městské obvody a části (`vf:Momc`), které parser
   ignoruje. Stálo by za to ověřit, že se obec a její části přečtou stejně.
 - Rychlejší start kontejneru: CDS archiv (tréninkový běh při buildu image) a AOT zpracování kontextu by start zkrátily
-  z několika sekund.
+  z několika sekund na zlomek sekundy.
 
 ## Licence
 

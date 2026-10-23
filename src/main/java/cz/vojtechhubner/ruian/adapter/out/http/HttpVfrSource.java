@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import org.jspecify.annotations.Nullable;
+import org.springframework.boot.http.client.FilteredHostException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
@@ -17,10 +18,12 @@ import org.springframework.web.client.RestClient;
  * memory. The client comes from the auto-configured builder, so the {@code spring.http.clients.*} settings apply.
  * <p>
  * Any status other than 2xx is reported as a {@link SourceUnavailableException}, a 3xx included: redirects are
- * not followed by configuration, so the message names the host a redirect points to instead. A
- * {@link ResourceAccessException} (connect or read timeout, DNS failure, I/O error while streaming) and an
- * {@link UncheckedIOException} thrown by the reader when the stream breaks mid-parse become a
- * {@link SourceUnavailableException} too; domain exceptions thrown by the reader propagate unchanged.
+ * not followed by configuration, so the message names the host a redirect points to instead (or the raw location
+ * when it is relative). A {@link ResourceAccessException} (connect or read timeout, DNS failure, I/O error while
+ * streaming), a {@link FilteredHostException} (the host resolves to an address the configured
+ * {@code InetAddressFilter} blocks) and an {@link UncheckedIOException} thrown by the reader when the stream breaks
+ * mid-parse become a {@link SourceUnavailableException} too; domain exceptions thrown by the reader propagate
+ * unchanged.
  */
 @Component
 public class HttpVfrSource implements VfrSource {
@@ -45,6 +48,8 @@ public class HttpVfrSource implements VfrSource {
             });
         } catch (ResourceAccessException e) {
             throw new SourceUnavailableException(source, "connection failed: " + e.getMessage(), e);
+        } catch (FilteredHostException e) {
+            throw new SourceUnavailableException(source, "host resolves to a blocked address: " + e.getMessage(), e);
         } catch (UncheckedIOException e) {
             throw new SourceUnavailableException(source, "download interrupted: " + e.getMessage(), e);
         }
@@ -55,8 +60,10 @@ public class HttpVfrSource implements VfrSource {
         if (!status.is3xxRedirection()) {
             return description;
         }
-        return location == null
-                ? description + " redirect without Location"
-                : description + " redirect to " + location.getHost();
+        if (location == null) {
+            return description + " redirect without Location";
+        }
+        String target = location.getHost() != null ? location.getHost() : location.toString();
+        return description + " redirect to " + target;
     }
 }
