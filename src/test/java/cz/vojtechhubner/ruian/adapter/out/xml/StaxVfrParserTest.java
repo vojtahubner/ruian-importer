@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import cz.vojtechhubner.ruian.application.ImportProperties;
 import cz.vojtechhubner.ruian.domain.exception.VfrParseException;
 import cz.vojtechhubner.ruian.domain.model.Municipality;
 import cz.vojtechhubner.ruian.domain.model.MunicipalityDataset;
@@ -13,9 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.unit.DataSize;
 
 class StaxVfrParserTest {
 
@@ -27,7 +30,14 @@ class StaxVfrParserTest {
             new MunicipalityPart(31801, "Drahoraz", KOPIDLNO),
             new MunicipalityPart(31828, "Pševes", KOPIDLNO));
 
-    private final StaxVfrParser parser = new StaxVfrParser(64L * 1024 * 1024);
+    private final StaxVfrParser parser = parserWithLimit(64L * 1024 * 1024);
+
+    /** A parser configured like production, except for the size limit under test. */
+    private static StaxVfrParser parserWithLimit(long maxUncompressedBytes) {
+        return new StaxVfrParser(new ImportProperties(
+                URI.create("https://www.smartform.cz/download/kopidlno.xml.zip"), List.of("smartform.cz"), false,
+                DataSize.ofBytes(maxUncompressedBytes)));
+    }
 
     private static String sampleXml() {
         try (var in = StaxVfrParserTest.class.getResourceAsStream("/vfr/kopidlno-sample.xml")) {
@@ -178,7 +188,7 @@ class StaxVfrParserTest {
 
     @Test
     void rejectsInputBeyondTheUncompressedLimit() {
-        var limitedParser = new StaxVfrParser(1024);
+        var limitedParser = parserWithLimit(1024);
 
         assertThatExceptionOfType(VfrParseException.class)
                 .isThrownBy(() -> limitedParser.parse(stream(sampleXml())))

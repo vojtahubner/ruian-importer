@@ -2,20 +2,27 @@ package cz.vojtechhubner.ruian.adapter.out.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import cz.vojtechhubner.ruian.application.ImportProperties;
 import cz.vojtechhubner.ruian.domain.model.Municipality;
 import cz.vojtechhubner.ruian.domain.model.MunicipalityPart;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.unit.DataSize;
 
 class StaxVfrParserRealFileTest {
 
     @Test
     void parsesTheRealArchiveWithoutReadingItWhole() throws IOException {
+        var parser = new StaxVfrParser(new ImportProperties(
+                URI.create("https://www.smartform.cz/download/kopidlno.xml.zip"), List.of("smartform.cz"), false,
+                DataSize.ofMegabytes(64)));
         try (var resource = getClass().getResourceAsStream("/vfr/kopidlno.xml.zip");
                 var counting = new CountingInputStream(resource)) {
-            var dataset = new StaxVfrParser(64L * 1024 * 1024).parse(counting);
+            var dataset = parser.parse(counting);
 
             assertThat(dataset.municipality()).isEqualTo(new Municipality(573060, "Kopidlno"));
             assertThat(dataset.parts()).containsExactly(
