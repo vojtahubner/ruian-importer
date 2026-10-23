@@ -20,6 +20,8 @@ FROM eclipse-temurin:25-jre-alpine
 RUN addgroup -S app && adduser -S app -G app
 USER app
 WORKDIR /app
+# The image runs with the docker profile even without Compose (compose.yaml sets the same variable).
+ENV SPRING_PROFILES_ACTIVE=docker
 # Least-changing layers first: a code change rebuilds only the application layer.
 COPY --from=build /build/extracted/dependencies/ ./
 COPY --from=build /build/extracted/spring-boot-loader/ ./

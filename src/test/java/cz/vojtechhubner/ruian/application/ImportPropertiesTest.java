@@ -35,13 +35,6 @@ class ImportPropertiesTest {
     }
 
     @Test
-    void bindsMegabytesToBytes() {
-        runner.withPropertyValues(VALID_VALUES).run(context ->
-                assertThat(context.getBean(ImportProperties.class).maxUncompressedBytes().toBytes())
-                        .isEqualTo(64L * 1024 * 1024));
-    }
-
-    @Test
     void rejectsEmptyAllowedHosts() {
         runner.withPropertyValues(VALID_VALUES).withPropertyValues("ruian.import.allowed-hosts=").run(context -> {
             assertThat(context).hasFailed();

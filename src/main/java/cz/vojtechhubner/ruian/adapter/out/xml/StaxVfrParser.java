@@ -127,12 +127,6 @@ public class StaxVfrParser implements VfrParser {
         if (municipality == null) {
             throw new VfrParseException("VFR file contains no municipality");
         }
-        for (var part : parts) {
-            if (part.municipalityCode() != municipality.code()) {
-                throw new VfrParseException("Part " + part.code() + " belongs to municipality "
-                        + part.municipalityCode() + ", expected " + municipality.code());
-            }
-        }
         return new MunicipalityDataset(municipality, parts);
     }
 

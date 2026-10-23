@@ -154,6 +154,32 @@ class ImportServiceTest {
     }
 
     @Test
+    void rethrowsTheSaveFailureWithTheImportFailureSuppressed() {
+        var failure = new VfrParseException("bad vfr");
+        when(parser.parse(any())).thenThrow(failure);
+        var saveFailure = new RuntimeException("history unavailable");
+        when(runs.save(any())).thenThrow(saveFailure);
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.importFrom(SOURCE))
+                .isSameAs(saveFailure)
+                .satisfies(e -> assertThat(e.getSuppressed()).containsExactly(failure));
+    }
+
+    @Test
+    void propagatesTheSaveFailureOfTheSucceededRunUnchanged() {
+        when(parser.parse(any())).thenReturn(DATASET);
+        when(municipalities.replace(DATASET)).thenReturn(2);
+        var saveFailure = new RuntimeException("history unavailable");
+        when(runs.save(any())).thenThrow(saveFailure);
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.importFrom(SOURCE))
+                .isSameAs(saveFailure);
+        verify(runs).save(any());
+    }
+
+    @Test
     void latestDelegatesToTheStore() {
         var run = ImportRun.succeeded(SOURCE, STARTED_AT, STARTED_AT, KOPIDLNO, 2).withId(42L);
         when(runs.findLatest(5)).thenReturn(List.of(run));
