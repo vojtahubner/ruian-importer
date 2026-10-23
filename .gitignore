@@ -13,7 +13,5 @@ target/
 .DS_Store
 
 # Local tooling and private files
-.claude/
-CLAUDE.md
 *.log
 Zrucny_Java_ucen_Trixi.pdf
