@@ -12,6 +12,45 @@ adapter jde vyměnit nebo testovat samostatně (`HttpVfrSource` s `MockRestServi
 a závislosti mezi vrstvami nejsou konvence, ale pravidla, která hlídá `ArchitectureTest`. Daň jsou porty, mappery a
 DTO navíc; zdůvodnění je v [ADR 0001](adr/0001-hexagonalni-architektura.md).
 
+Komponenty a směr závislostí (plná šipka = závislost, tečkovaná = implementace portu):
+
+```mermaid
+flowchart LR
+    subgraph inbound["adapter.in"]
+        web["REST<br/>ImportController<br/>MunicipalityController"]
+        startup["StartupImportRunner"]
+    end
+    subgraph application["application"]
+        services["ImportService"]
+        queries["MunicipalityQueryService"]
+        policy["SourceUrlPolicy"]
+    end
+    subgraph domain["domain"]
+        portsIn["port.in<br/>ImportMunicipalityUseCase<br/>ImportRunQuery<br/>MunicipalityQuery"]
+        model["model<br/>Municipality<br/>MunicipalityPart<br/>MunicipalityDataset<br/>ImportRun"]
+        portsOut["port.out<br/>VfrSource<br/>VfrParser<br/>MunicipalityStore<br/>ImportRunStore"]
+    end
+    subgraph outbound["adapter.out"]
+        httpSource["HttpVfrSource<br/>(RestClient)"]
+        staxParser["StaxVfrParser<br/>(JDK StAX)"]
+        persistence["MunicipalityPersistenceAdapter<br/>ImportRunPersistenceAdapter<br/>(JPA)"]
+    end
+    postgres[("PostgreSQL")]
+
+    web --> portsIn
+    startup --> portsIn
+    portsIn -.->|implementace| services
+    portsIn -.->|implementace| queries
+    services --> policy
+    services --> model
+    services --> portsOut
+    queries --> portsOut
+    portsOut -.->|implementace| httpSource
+    portsOut -.->|implementace| staxParser
+    portsOut -.->|implementace| persistence
+    persistence --> postgres
+```
+
 ## Vrstvy a balíčky
 
 ```text

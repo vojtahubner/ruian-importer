@@ -17,13 +17,6 @@
     <description>Imports RÚIAN municipality data (obec, části obce) from VFR XML into PostgreSQL</description>
     <url>https://github.com/vojtahubner/ruian-importer</url>
 
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/license/mit</url>
-        </license>
-    </licenses>
-
     <developers>
         <developer>
             <id>vojtahubner</id>
