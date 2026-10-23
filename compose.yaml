@@ -1,3 +1,5 @@
+# ./mvnw spring-boot:run starts only db (Spring Boot Docker Compose support); the app itself runs on the host.
+# docker compose --profile app up --build builds the image and starts both db and app.
 services:
   db:
     image: postgres:18-alpine
@@ -16,6 +18,21 @@ services:
       timeout: 3s
       retries: 15
       start_period: 10s
+
+  app:
+    build: .
+    image: ruian-importer:local
+    profiles: ["app"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ruian
+      SPRING_DATASOURCE_USERNAME: ruian
+      SPRING_DATASOURCE_PASSWORD: ruian
+    ports:
+      - "8080:8080"
 
 volumes:
   db-data:
