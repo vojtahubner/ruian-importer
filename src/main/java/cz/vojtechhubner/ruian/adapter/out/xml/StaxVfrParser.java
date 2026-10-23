@@ -51,11 +51,7 @@ public class StaxVfrParser implements VfrParser {
     private final XMLInputFactory factory;
 
     public StaxVfrParser(ImportProperties properties) {
-        this(properties.maxUncompressedBytes().toBytes());
-    }
-
-    StaxVfrParser(long maxUncompressedBytes) {
-        this.maxUncompressedBytes = maxUncompressedBytes;
+        this.maxUncompressedBytes = properties.maxUncompressedBytes().toBytes();
         this.factory = XMLInputFactory.newDefaultFactory();
         factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
