@@ -1,0 +1,15 @@
+target/
+.git/
+.gitignore
+.gitattributes
+.editorconfig
+.idea/
+*.iml
+.vscode/
+docs/
+*.md
+Dockerfile
+compose.yaml
+.github/
+.DS_Store
+*.pdf
